@@ -10,12 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Optional: A more decorative font for the splash screen if desired, e.g., 'Pacifico' or 'Sacramento' -->
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    <!-- New: Google Fonts - Dancing Script for stylish tagline -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <!-- New Stylish Fonts for Tagline and Auth Page -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Dancing+Script:wght@400;700&family=Lobster&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* Hide scrollbar during splash screen */
+            overflow-x: hidden; /* Prevent horizontal scroll due to transforms */
+            min-height: 100vh; /* Ensure body is at least viewport height for scrolling */
+            /* Parallax Background for the entire main page */
+            background: linear-gradient(135deg, #FF7E5F, #FEB47B, #86A8E7, #91EAE4); /* Sunrise Orange -> Peach -> Light Blue -> Mint Green */
+            background-size: 400% 400%; /* For dynamic gradient animation */
+            animation: gradientShift 15s ease infinite; /* New: Gradient shift animation */
+            background-attachment: fixed; /* THIS CREATES THE MAIN PARALLAX EFFECT */
+            position: relative; 
+            scroll-behavior: smooth; /* Smooth scrolling for better UX */
         }
         /* Custom Styles for scrollbar in categories */
         .custom-scroll-y::-webkit-scrollbar {
@@ -93,7 +101,7 @@
         #splash-screen {
             position: fixed;
             inset: 0; /* Top, right, bottom, left to 0 */
-            /* UPDATED: More dynamic and vibrant gradient colors */
+            /* Splash screen has its own background, which fades out */
             background: linear-gradient(135deg, #FF7E5F, #FEB47B, #86A8E7, #91EAE4); /* Sunrise Orange -> Peach -> Light Blue -> Mint Green */
             background-size: 400% 400%; /* For dynamic gradient animation */
             animation: gradientShift 15s ease infinite; /* New: Gradient shift animation */
@@ -105,6 +113,7 @@
             z-index: 1000; /* Ensure it's on top */
             opacity: 1;
             transition: opacity 1s ease-out; /* Fade out effect */
+            overflow: hidden; /* Prevent scrollbars due to large SVG */
         }
 
         #splash-screen.fade-out {
@@ -112,7 +121,7 @@
             pointer-events: none; /* Disable interaction during fade-out */
         }
 
-        /* Keyframes for gradient background animation */
+        /* Keyframes for gradient background animation (used by both splash and main body) */
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -121,9 +130,10 @@
 
         .splash-title {
             font-family: 'Pacifico', cursive; /* Stylish font */
-            font-size: 6rem; /* Larger font size */
+            font-size: 8.5rem; /* Larger font size */
             font-weight: 800;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 35px rgba(255, 255, 255, 0.5); /* Enhanced shadow */
+            /* Less blur for text-shadow */
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.6); 
             background: linear-gradient(45deg, #FFFDE7, #FFECB3, #FFD700); /* Brighter golden gradient */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -135,50 +145,154 @@
             transform: scale(0.7); /* Start smaller for a more dramatic zoom */
             opacity: 0; /* Start invisible */
             margin-bottom: 20px;
+            position: relative; /* For z-index to work */
+            z-index: 20; /* Ensure text is above graphic */
         }
 
-        /* Updated Splash Screen Tagline Style */
         .splash-tagline {
-            font-family: 'Dancing Script', cursive; /* Stylish font for splash tagline */
-            font-size: 2.8rem; /* Slightly larger tagline */
-            font-weight: 700; /* Make it bolder */
-            opacity: 0;
-            transform: translateY(30px);
-            animation: taglineFadeIn 1s ease-out 1.8s forwards;
-            /* Add gradient color and shadow */
-            background: linear-gradient(45deg, #FFDDC1, #FFABAB, #FFC3A0); /* Warm, inviting gradient */
+            font-family: 'Dancing Script', cursive; /* New stylish font */
+            font-size: 3.5rem; /* Larger tagline */
+            font-weight: 700; /* Bolder */
+            color: transparent; /* Make text transparent to apply gradient */
+            background: linear-gradient(90deg, #1a1a1a, #333333, #000000); /* Darker, black gradient */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5), 0 0 10px rgba(255, 255, 255, 0.3); /* More pronounced white shadow */
+            letter-spacing: 0.08em; /* Increased letter spacing */
+            opacity: 0;
+            transform: translateY(40px) scale(0.9); /* More pronounced slide-in and slightly scaled */
+            animation: 
+                taglineFadeIn 1s ease-out 1.8s forwards, /* Delayed fade in after title */
+                taglineFloat 3s ease-in-out 3s infinite alternate; /* New floating animation for tagline */
+            position: relative; /* For z-index to work */
+            z-index: 20; /* Ensure text is above graphic */
         }
 
+        /* Flavor Burst Specific Styles */
+        .flavor-burst-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10; /* Behind text */
+            pointer-events: none; /* Allow clicks to pass through */
+            opacity: 0; /* Start hidden for initial fade-in */
+            transform: scale(0.7); /* Start slightly smaller */
+            animation: flavorBurstAppear 1.5s ease-out 0.5s forwards; /* Overall fade-in and scale */
+        }
+
+        .flavor-burst-svg {
+            width: 150vmin; /* Large to cover text area */
+            height: 150vmin;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4)) drop-shadow(0 0 25px rgba(255, 255, 255, 0.2));
+            transform-origin: center center;
+            will-change: transform, opacity, filter;
+        }
+
+        /* Keyframes for the new splash screen elements */
+        @keyframes flavorBurstAppear {
+            0% { opacity: 0; transform: scale(0.7) rotate(0deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
+        }
+
+        @keyframes pathDraw {
+            from { stroke-dashoffset: var(--path-length); }
+            to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes rotateClockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes rotateCounterClockwise {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+
+        @keyframes subtleScale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.05); }
+        }
+
+        /* Applying animations and initial states */
+        .bg-pulse {
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+
+        .aroma-swirl-path {
+            --path-length: 400; /* Approximate path length */
+            stroke-dasharray: var(--path-length);
+            stroke-dashoffset: var(--path-length);
+            animation: pathDraw 3s ease-out forwards 1s, rotateClockwise 40s linear infinite, subtleScale 6s ease-in-out infinite alternate;
+        }
+
+        .inner-aroma-swirl-path {
+            --path-length: 250; /* Approximate path length */
+            stroke-dasharray: var(--path-length);
+            stroke-dashoffset: var(--path-length);
+            animation: pathDraw 2.5s ease-out forwards 1.5s, rotateCounterClockwise 35s linear infinite, subtleScale 5s ease-in-out infinite alternate-reverse;
+        }
+
+        .line-animate {
+            /* Path length will be set inline for staggering */
+            stroke-dashoffset: var(--path-length); /* Set initial state for path draw */
+            opacity: 0; /* Start invisible for the lines to draw in */
+            animation: pathDraw 1s ease-out forwards calc(2s + var(--i) * 0.1s), sparkle 2s ease-in-out infinite alternate;
+        }
+
+        .ingredient-particle {
+            opacity: 0; /* Start invisible for particles to sparkle in */
+            animation: sparkle 1.5s ease-in-out infinite alternate calc(2.5s + var(--j) * 0.05s);
+        }
+
+        /* Text Animation Enhancements */
         @keyframes splashTextAppear {
-            0% { opacity: 0; transform: scale(0.7) rotateX(-90deg); } /* Initial rotation for drama */
-            50% { opacity: 1; transform: scale(1.1) rotateX(20deg); }
-            100% { opacity: 1; transform: scale(1) rotateX(0deg); }
+            0% { opacity: 0; transform: scale(0.7) translateY(-20px) rotate(-5deg); } /* Start smaller, higher, and rotated */
+            100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); } /* End at normal size, position, and no rotation */
         }
 
         @keyframes splashTextPulse {
-            0% { 
-                transform: scale(1); 
-                text-shadow: 0 0 20px rgba(255, 255, 255, 0.7), 0 0 35px rgba(255, 255, 255, 0.5);
+            0%, 100% { 
+                transform: scale(1) rotate(0deg); /* No rotation at start/end of pulse cycle */
+                text-shadow: 0 0 3px rgba(255, 255, 255, 0.8), 0 0 8px rgba(255, 255, 255, 0.6);
             }
-            100% { 
-                transform: scale(1.03); /* Subtle scale up */
-                text-shadow: 0 0 25px rgba(255, 255, 255, 0.9), 0 0 45px rgba(255, 255, 255, 0.7); /* Brighter glow */
+            50% { 
+                transform: scale(1.01) rotate(1deg); /* Slight scale and rotation at mid-pulse */
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.9), 0 0 12px rgba(255, 255, 255, 0.8);
             }
         }
 
         @keyframes taglineFadeIn {
-            to { opacity: 1; transform: translateY(0); }
+            0% { opacity: 0; transform: translateY(40px) scale(0.9) rotate(5deg); } /* Start lower, smaller, and rotated */
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); } /* End at normal position and no rotation */
         }
+
+        @keyframes taglineFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-8px) rotate(-2deg); } /* More prominent float and slight wobble */
+            75% { transform: translateY(8px) rotate(2deg); }
+        }
+
 
         /* Main App Title Styling */
         .main-title {
             font-family: 'Pacifico', cursive; /* Apply stylish font to main title too */
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            font-size: 4.8rem; /* Even larger font size */
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.4); /* Minimal blur */
             background: linear-gradient(to right, #a7e04f, #3cb371);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -188,70 +302,426 @@
             animation: mainTitleGlow 2s ease-in-out infinite alternate;
         }
 
-        @keyframes mainTitleGlow {
-            from {
-                text-shadow: 0 0 8px rgba(167, 224, 79, 0.8), 0 0 15px rgba(60, 179, 113, 0.6);
-            }
-            to {
-                text-shadow: 0 0 12px rgba(167, 224, 79, 1), 0 0 25px rgba(60, 179, 113, 0.8), 0 0 35px rgba(167, 224, 79, 0.4);
-            }
-        }
-
-        /* New: Main App Tagline Style */
         .main-tagline {
-            font-family: 'Dancing Script', cursive; /* Apply stylish font to main tagline */
-            font-size: 1.8rem; /* Adjust size as needed for main page */
+            font-family: 'Dancing Script', cursive; /* Apply new stylish font to main tagline */
+            font-size: 1.8rem; /* Adjusted for main page, larger */
             font-weight: 700;
-            background: linear-gradient(to right, #e74c3c, #f39c12); /* Vibrant gradient */
+            color: transparent; /* Make text transparent to apply gradient */
+            background: linear-gradient(90deg, #1a1a1a, #333333, #000000); /* Darker, black gradient */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.2); /* Shadow for main page tagline */
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.4), 0 0 7px rgba(255, 255, 255, 0.3); /* Subtle white shadow for depth */
+            letter-spacing: 0.08em; /* Increased letter spacing */
+            animation: taglineFloat 3s ease-in-out infinite alternate; /* Reuse tagline float animation */
         }
+
+
+        @keyframes mainTitleGlow {
+            from {
+                text-shadow: 0 0 4px rgba(167, 224, 79, 0.8), 0 0 8px rgba(60, 179, 113, 0.6);
+            }
+            to {
+                text-shadow: 0 0 6px rgba(167, 224, 79, 1), 0 0 12px rgba(60, 179, 113, 0.8), 0 0 20px rgba(167, 224, 79, 0.4);
+            }
+        }
+
+        /* Parallax elements initial state and performance hints */
+        .parallax-element {
+            will-change: transform; /* Hint to browser for smoother animations */
+            transform: translateY(0); /* Ensure translate property is present for JS manipulation */
+        }
+
+        /* Recipe Card Entrance Animation */
+        @keyframes cardPopIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .recipe-card-animated {
+            animation: cardPopIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; /* Ease-out effect */
+            opacity: 0; /* Start hidden */
+        }
+
+        /* New: Recipe Card Hover Animation */
+        .recipe-card-animated:hover {
+            transform: translateY(-8px) scale(1.05) rotateZ(1deg); /* More pronounced lift, scale, and subtle rotation */
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35), 0 0 0 4px rgba(99, 102, 241, 0.6); /* Stronger shadow + glowing ring */
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother, more dramatic transition */
+        }
+
+        /* New: Image hover effect inside recipe card */
+        .recipe-card-animated img {
+            transition: filter 0.3s ease;
+        }
+        .recipe-card-animated:hover img {
+            filter: brightness(1.1) saturate(1.15) contrast(1.05); /* Enhance image on hover */
+        }
+
+
+        /* New: Main Content Box Float Animation */
+        @keyframes contentBoxFloat {
+            0%, 100% {
+                transform: translateY(0px) scale(1);
+                /* Slightly less aggressive shadows for smoother scroll interaction */
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); 
+            }
+            50% {
+                transform: translateY(-6px) scale(1.005); /* Slightly reduced lift */
+                /* Slightly less aggressive shadows at peak */
+                box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6); 
+            }
+        }
+        /* New Keyframe for main-content-box background animation */
+        @keyframes contentGradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #main-content-box {
+            animation: contentBoxFloat 6s ease-in-out infinite alternate, contentGradientShift 12s ease infinite; /* Apply both animations */
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(200, 230, 255, 0.3) 100%); /* Translucent white to light blue gradient */
+            backdrop-filter: blur(15px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(15px); /* For Safari support */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for glass effect */
+            background-size: 400% 400%; /* Important for gradient shift animation */
+            /* ... existing properties ... */
+        }
+
+        /* Tab Content Transition */
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOutContent {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(10px); }
+        }
+
+        .tab-content-enter {
+            animation: fadeInContent 0.4s ease-out forwards;
+        }
+        .tab-content-exit {
+            animation: fadeOutContent 0.4s ease-in forwards;
+        }
+
+        /* Input focus animation */
+        input:focus {
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5); /* ring-indigo-500 equivalent */
+            border-color: #6366f1; /* indigo-500 */
+        }
+        input {
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Button hover/active refinement */
+        button {
+            transition: all 0.2s ease-in-out;
+        }
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .search-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .tab-button:hover:not(.active) {
+            transform: translateY(-2px);
+        }
+        .tab-button.active {
+            transform: scale(1.02);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        /* Auth page specific styles */
+        .auth-background {
+            background: linear-gradient(135deg, #1A2980, #26D0CE, #C6FFDD); /* Dark Blue -> Teal -> Light Green */
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite; /* Re-use gradient shift */
+        }
+
+        /* New Keyframes for Auth Page Animations */
+        @keyframes authFormSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes authInputFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes authButtonPopIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .auth-title {
+            font-family: 'Lobster', cursive; /* More playful, welcoming font */
+            font-size: 3.8rem; /* Slightly larger */
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4), 0 0 15px rgba(255, 255, 255, 0.3); /* Stronger shadow with white glow */
+            /* UPDATED: New gradient for the title for a stylish, vibrant look */
+            background: linear-gradient(45deg, #4CAF50, #8BC34A, #CDDC39); /* Green to Lime Green gradient */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent; /* Ensures the gradient is visible */
+            margin-bottom: 1.5rem;
+            animation: authInputFadeIn 0.8s ease-out forwards; /* Animate title in */
+        }
+        .auth-tagline {
+            font-family: 'Dancing Script', cursive; /* Use for tagline */
+            font-size: 2.2rem; /* Larger tagline */
+            font-weight: 700;
+            color: transparent;
+            /* UPDATED: New gradient for the tagline for a contrasting stylish look */
+            background: linear-gradient(90deg, #2196F3, #03A9F4, #00BCD4); /* Blue to Light Blue/Cyan gradient */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            letter-spacing: 0.05em;
+            margin-bottom: 2.5rem; /* More space below tagline */
+            animation: authInputFadeIn 0.8s ease-out 0.2s forwards; /* Delayed animation */
+        }
+        .auth-form-container {
+            background: rgba(255, 255, 255, 0.95); /* Slightly less opaque white for a crisp look */
+            padding: 3rem; /* More padding */
+            border-radius: 2rem; /* More rounded */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4); /* Stronger, deeper shadow */
+            max-width: 32rem; /* Wider form */
+            width: 100%;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            animation: authFormSlideIn 0.8s ease-out forwards; /* Form entry animation */
+            /* Removed backdrop-filter to remove blur */
+            color: #333; /* Added a default text color for other elements within the form */
+        }
+        .auth-form-container:hover {
+            transform: translateY(-8px) scale(1.01); /* More pronounced hover effect */
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        .auth-input {
+            background-color: rgba(255, 255, 255, 0.95);
+            border: 1px solid #D1D5DB; /* Lighter border */
+            border-radius: 1rem; /* More rounded inputs */
+            padding: 1rem 1.5rem; /* More padding */
+            color: #333; /* Ensuring input text color is consistent */
+            font-size: 1.1rem; /* Larger font in inputs */
+            transition: all 0.3s ease-in-out;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1); /* Subtle inner shadow */
+            animation: authInputFadeIn 0.6s ease-out forwards; /* Input entry animation */
+        }
+        .auth-input:focus {
+            border-color: #A855F7; /* Purple focus ring */
+            box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.4), inset 0 1px 3px rgba(0,0,0,0.15); /* Stronger, colored shadow */
+            background-color: #FFFFFF;
+        }
+        .auth-button {
+            padding: 1rem 1.8rem; /* More padding */
+            border-radius: 1.25rem; /* Even more rounded */
+            font-weight: 800; /* Bolder text */
+            font-size: 1.2rem; /* Larger button text */
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25); /* Deeper shadow */
+            transform: scale(0.95); /* Start slightly smaller for pop in */
+            animation: authButtonPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; /* Pop in animation */
+            opacity: 0; /* Start hidden for animation */
+        }
+        .auth-button:hover {
+            transform: translateY(-4px) scale(1.02); /* More lift and scale */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+        .auth-button:active {
+            transform: translateY(0) scale(0.98); /* Slight press effect */
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+        /* Specific button gradients and shadows */
+        .btn-primary {
+            background: linear-gradient(45deg, #6B46C1, #9F7AEA); /* Purple to Lighter Purple */
+            color: white;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #5A3AAB, #8C6AD3);
+        }
+        .btn-secondary {
+            background: linear-gradient(45deg, #10B981, #34D399); /* Emerald Green */
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(45deg, #0E9A6F, #2BB87D);
+        }
+        .btn-skip {
+            background: linear-gradient(45deg, #60A5FA, #93C5FD); /* Blue shades */
+            color: white;
+        }
+        .btn-skip:hover {
+            background: linear-gradient(45deg, #508EEC, #7EB8F0);
+        }
+        /* Recipe Card Colors (New) */
+        .card-bg-gradient-1 { background: linear-gradient(135deg, #FAD0C4 0%, #FFD1FF 100%); } /* Soft Peach to Pink */
+        .card-bg-gradient-2 { background: linear-gradient(135deg, #A1C4FD 0%, #C2E9FB 100%); } /* Light Blue to Cyan */
+        .card-bg-gradient-3 { background: linear-gradient(135deg, #FBC2EB 0%, #A6C1EE 100%); } /* Pink to Periwinkle */
+        .card-bg-gradient-4 { background: linear-gradient(135deg, #84FAB0 0%, #8FD3F4 100%); } /* Light Green to Sky Blue */
+        .card-bg-gradient-5 { background: linear-gradient(135deg, #FFE98A 0%, #FAB8CD 100%); } /* Yellow to Pink */
+        .card-bg-gradient-6 { background: linear-gradient(135deg, #FFDAB9 0%, #FFC0CB 100%); } /* Peachpuff to Pink */
+        
+        /* Recipe Card Title Colors (New) */
+        .card-title-color-1 { color: #8B5CF6; /* Violet */ }
+        .card-title-color-2 { color: #EF4444; /* Red */ }
+        .card-title-color-3 { color: #10B981; /* Emerald */ }
+        .card-title-color-4 { color: #3B82F6; /* Blue */ }
+        .card-title-color-5 { color: #EC4899; /* Pink */ }
+        .card-title-color-6 { color: #F59E0B; /* Amber */ }
+
+        /* New: Categories Container Styling */
+        #categoriesContainer {
+            background: linear-gradient(135deg, rgba(240, 249, 255, 0.4) 0%, rgba(203, 238, 255, 0.4) 100%); /* Light translucent blue gradient */
+            backdrop-filter: blur(10px); /* Frosted glass effect for categories */
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow */
+            transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+        }
+        #categoriesContainer:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* Deeper shadow on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        
+        /* Adjust existing card gradients for animation */
+        .card-bg-gradient-1, .card-bg-gradient-2, .card-bg-gradient-3,
+        .card-bg-gradient-4, .card-bg-gradient-5, .card-bg-gradient-6 {
+            background-size: 200% 200%; /* Make background larger for animation */
+            transition: background-position 0.6s ease-in-out; /* Add transition for background position */
+        }
+
+        /* New: Background animation for dishes on hover */
+        .recipe-card-animated:hover.card-bg-gradient-1 { background-position: 100% 100%; }
+        .recipe-card-animated:hover.card-bg-gradient-2 { background-position: 0% 100%; }
+        .recipe-card-animated:hover.card-bg-gradient-3 { background-position: 100% 0%; }
+        .recipe-card-animated:hover.card-bg-gradient-4 { background-position: 0% 0%; }
+        .recipe-card-animated:hover.card-bg-gradient-5 { background-position: 75% 75%; }
+        .recipe-card-animated:hover.card-bg-gradient-6 { background-position: 25% 25%; }
     </style>
 </head>
-<body class="bg-gray-100">
+<body class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
     <div id="splash-screen">
+        <div class="flavor-burst-container">
+            <svg class="flavor-burst-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- Gradients for flavor elements -->
+                    <radialGradient id="flavorCoreGradient" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                        <stop offset="0%" stop-color="#FFD700" /> <!-- Gold -->
+                        <stop offset="100%" stop-color="#FFA500" /> <!-- Orange -->
+                    </radialGradient>
+                    <linearGradient id="aromaGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#A7F3D0" /> <!-- Emerald 200 -->
+                        <stop offset="100%" stop-color="#34D399" /> <!-- Emerald 400 -->
+                    </linearGradient>
+                    <linearGradient id="aromaGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FF6347" /> <!-- Tomato -->
+                        <stop offset="100%" stop-color="#FF4500" /> <!-- OrangeRed -->
+                    </linearGradient>
+                    <radialGradient id="highlightParticle" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+                        <stop offset="100%" stop-color="#FDE68A" stop-opacity="0.5" />
+                    </radialGradient>
+
+                    <!-- Filters for glowing effect -->
+                    <filter id="flavorGlow">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"></feGaussianBlur>
+                        <feOffset dx="0" dy="0" in="blur" result="shadow"></feOffset>
+                        <feMerge>
+                            <feMergeNode in="shadow"></feMergeNode>
+                            <feMergeNode in="SourceGraphic"></feMergeNode>
+                        </feMerge>
+                    </filter>
+                </defs>
+
+                <!-- Background pulsing element (like a shimmering heat or energy) -->
+                <circle cx="100" cy="100" r="70" fill="url(#highlightParticle)" opacity="0.2" class="bg-pulse"/>
+
+                <!-- Central Flavor Core / Plate -->
+                <circle cx="100" cy="100" r="25" fill="url(#flavorCoreGradient)" filter="url(#flavorGlow)"/>
+
+                <!-- Main Aroma Swirl Paths -->
+                <path d="M 30 100 C 50 40 150 40 170 100 C 150 160 50 160 30 100 Z"
+                      fill="none" stroke="url(#aromaGradient1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                      filter="url(#flavorGlow)" class="aroma-swirl-path"/>
+
+                <path d="M 50 100 Q 70 70 100 80 T 150 100 Q 130 130 100 120 Z"
+                      fill="none" stroke="url(#aromaGradient2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                      opacity="0.7" class="inner-aroma-swirl-path"/>
+
+                <!-- Radiating Lines (like steam or flavor trails) -->
+                <g class="radiating-lines-group">
+                    ${Array(12).fill(0).map((_, i) => `
+                        <line x1="100" y1="30" x2="100" y2="90" stroke="white" stroke-width="1" opacity="0.5" transform="rotate(${i * 30} 100 100)"
+                              class="line-animate" style="--i: ${i}; --path-length: 60;"/>
+                    `).join('')}
+                </g>
+
+                <!-- Ingredient Particles (Leaf, Chili, Drop, Star) -->
+                <g class="ingredient-particles-group">
+                    <!-- Leaf particles -->
+                    ${Array(8).fill(0).map((_, j) => `
+                        <path d="M10 0 C 5 5 5 10 10 15 C 15 10 15 5 10 0 Z" fill="green" opacity="0.8" transform="translate(${20 + Math.random() * 160}, ${20 + Math.random() * 160}) scale(0.8) rotate(${Math.random() * 360})"
+                              class="ingredient-particle" style="--j: ${j}; animation-delay: ${j * 0.15}s;"/>
+                    `).join('')}
+                    <!-- Chili particles -->
+                    ${Array(5).fill(0).map((_, j) => `
+                        <circle cx="0" cy="0" r="3" fill="red" opacity="0.9" transform="translate(${20 + Math.random() * 160}, ${20 + Math.random() * 160})"
+                                class="ingredient-particle" style="--j: ${j+8}; animation-delay: ${j * 0.2 + 0.5}s;"/>
+                    `).join('')}
+                    <!-- Drop particles -->
+                    ${Array(6).fill(0).map((_, j) => `
+                        <path d="M0 0 A5 5 0 0 1 10 0 L5 12 Z" fill="blue" opacity="0.7" transform="translate(${20 + Math.random() * 160}, ${20 + Math.random() * 160}) scale(0.6) rotate(${Math.random() * 360})"
+                              class="ingredient-particle" style="--j: ${j+13}; animation-delay: ${j * 0.18 + 0.8}s;"/>
+                    `).join('')}
+                    <!-- Star particles -->
+                    ${Array(10).fill(0).map((_, j) => `
+                        <polygon points="50,0 61,35 98,35 68,57 79,91 50,70 21,91 32,57 2,35 39,35" fill="gold" opacity="0.8" transform="translate(${20 + Math.random() * 160}, ${20 + Math.random() * 160}) scale(0.1)"
+                                class="ingredient-particle" style="--j: ${j+19}; animation-delay: ${j * 0.12 + 1.2}s;"/>
+                    `).join('')}
+                </g>
+            </svg>
+        </div>
         <h1 class="splash-title">Flavorz</h1>
         <p class="splash-tagline">A world of tastes!</p>
     </div>
 
-    <div id="root" style="display: none;"></div>
+    <div id="root" style="display: none;" class="w-full flex flex-col items-center"></div>
     <div id="popup-container"></div> <!-- Container for success/error popups -->
-
-    <!-- Firebase JS SDKs -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-firestore.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
-
-        window.firebase = {
-            initializeApp: initializeApp,
-            getFirestore: getFirestore,
-            collection: collection,
-            addDoc: addDoc,
-            getDocs: getDocs,
-            deleteDoc: deleteDoc,
-            doc: doc,
-            query: query,
-            where: where,
-            getAuth: getAuth,
-            signInAnonymously: signInAnonymously,
-            signInWithCustomToken: signInWithCustomToken,
-            createUserWithEmailAndPassword: createUserWithEmailAndPassword,
-            signInWithEmailAndPassword: signInWithEmailAndPassword,
-            signOut: signOut,
-            onAuthStateChanged: onAuthStateChanged
-        };
-    </script>
 
     <script>
         // Global variables provided by the environment (Canvas specific)
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-recipe-app';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
+        
         // TheMealDB API endpoints (direct calls, no CORS proxy needed)
         const MEALDB_API_BASE_URL = 'https://www.themealdb.com/api/json/v1/1/search.php?s=';
         const MEALDB_LOOKUP_URL = 'https://www.themealdb.com/api/json/v1/1/lookup.php?i=';
@@ -263,12 +733,14 @@
         const MAX_POPULAR_DISHES_TO_FETCH = 12; // Limit total popular dishes to display
 
         // Application State (global variables to simulate React state)
-        let db = null;
-        let auth = null;
-        let firebaseUserId = null; 
-        let currentUserIdForStorage = null; 
         let isAppInitialized = false;
-        let isFirebaseEnabled = false; 
+        let isLoggedIn = false;
+        let isGuest = false; // New state to differentiate guest from logged-in user
+        let currentUsername = '';
+        let loginEmail = '';
+        let loginPassword = '';
+        let authMessage = '';
+        let showRegisterForm = false; // To toggle between login and register on auth page
 
         let searchTerm = '';
         let recipes = [];
@@ -292,6 +764,13 @@
         let dynamicContentContainer; 
         let initialSectionsWrapper; 
         let popupContainerEl; 
+        let currentUsernameDisplayEl; 
+
+        // Parallax elements references
+        let parallaxHeaderContent;
+        let parallaxMainContentBox;
+        let mainTaglineEl; 
+        let currentContentContainer = null; 
 
         // --- Utility Functions ---
         function showLoading(element, message = 'Loading...') {
@@ -341,7 +820,7 @@
                 randomIndex = Math.floor(Math.random() * currentIndex);
                 currentIndex--;
                 [array[currentIndex], array[randomIndex]] = [
-                    array[randomIndex], array[currentIndex]];
+                    array[randomIndex], array[randomIndex]];
             }
             return array;
         }
@@ -353,10 +832,15 @@
             error = null;
             noResults = false;
             recipes = []; 
-            renderDynamicContent(); 
+            
+            // Immediately show loading spinner in the dynamic content container
+            // This is crucial for fixing the flicker.
+            dynamicContentContainer.innerHTML = ''; 
+            showLoading(dynamicContentContainer, "Loading recipes...");
+            dynamicContentContainer.classList.add('tab-content-enter'); // Ensure it animates in with loading state
 
             let url = '';
-            let fetchedMealIds = [];
+            let fetchedMealIds = []; // For category filter, we'll fetch IDs first
 
             try {
                 if (type === 'search') {
@@ -370,13 +854,13 @@
                     }
                     const data = await response.json();
                     if (data.meals) {
-                        recipes = data.meals;
+                        recipes = data.meals; // For search, full details usually come directly
                     } else {
                         noResults = true;
                     }
                 } else if (type === 'category') {
                     url = `${MEALDB_FILTER_CATEGORY_URL}${encodeURIComponent(query)}`;
-                    console.log(`Fetching meal IDs for category from: ${url}`);
+                    console.log(`Fetching category meal IDs from: ${url}`);
                     const response = await fetch(url);
                     if (!response.ok) {
                         const errorText = await response.text();
@@ -385,21 +869,26 @@
                     }
                     const data = await response.json();
                     
-                    if (data.meals) {
+                    if (data.meals && Array.isArray(data.meals)) {
                         fetchedMealIds = data.meals.map(meal => meal.idMeal);
+                        console.log(`Fetched ${fetchedMealIds.length} meal IDs for category: ${query}`);
+
                         // Now fetch full details for each meal ID
                         const detailFetchPromises = fetchedMealIds.map(id => fetchRecipeDetailsById(id));
                         const results = await Promise.allSettled(detailFetchPromises);
-                        
+
                         const fullRecipes = [];
                         results.forEach(result => {
                             if (result.status === 'fulfilled' && result.value) {
                                 fullRecipes.push(result.value);
                             } else if (result.status === 'rejected') {
-                                console.error(`Error fetching details for a meal ID from category:`, result.reason);
+                                console.error(`Error fetching details for meal ID in category fetch:`, result.reason);
                             }
                         });
                         recipes = fullRecipes;
+                        if (recipes.length === 0) {
+                            noResults = true;
+                        }
                     } else {
                         noResults = true;
                     }
@@ -409,8 +898,8 @@
                 error = `Failed to fetch recipes: ${err.message}. This might be a network issue or TheMealDB API is unreachable.`;
             } finally {
                 loading = false;
-                renderDynamicContent(); 
-                updateSectionVisibility(); 
+                renderDynamicContent(); // Render new content now that data is available or loading has finished
+                updateErrorDisplay(); // Update error display in case of fetch errors
             }
         }
 
@@ -443,31 +932,50 @@
             }
         }
 
+        // Modified fetchSavedRecipes to use currentUsername for local storage key
         async function fetchSavedRecipes() {
+            // Only fetch saved recipes if not a guest or if the guest has a specific ID
+            if (!isLoggedIn && !isGuest) {
+                savedRecipes = [];
+                updateSavedRecipesCount();
+                renderDynamicContent();
+                return;
+            }
+
             loading = true;
             error = null;
             savedRecipes = [];
-            renderDynamicContent(); 
+            // Immediately show loading spinner for saved recipes
+            dynamicContentContainer.innerHTML = '';
+            showLoading(dynamicContentContainer, "Loading your saved recipes...");
+            dynamicContentContainer.classList.add('tab-content-enter');
+
 
             try {
-                const localData = localStorage.getItem('localSavedRecipes');
+                const storageKey = isGuest ? `localSavedRecipes_guest` : `localSavedRecipes_${currentUsername}`;
+                const localData = localStorage.getItem(storageKey);
                 savedRecipes = localData ? JSON.parse(localData) : [];
-                console.log("Loaded saved recipes from local storage.");
+                console.log(`Loaded saved recipes from local storage for ${storageKey}.`);
             } catch (err) {
                 console.error("Error fetching saved recipes from local storage:", err);
                 error = `Failed to load saved recipes from local storage: ${err.message}`;
+            } finally {
+                loading = false;
+                renderDynamicContent(); // Render new content
+                updateSectionVisibility(); 
             }
-            updateSavedRecipesCount();
-            loading = false;
-            renderDynamicContent(); 
-            updateSectionVisibility(); 
         }
 
         async function fetchPopularDishes() {
             loading = true; 
             error = null; 
             popularDishes = []; 
-            renderPopularDishes(); 
+            // Clear container and show loading right away
+            if (popularDishesContainer) {
+                popularDishesContainer.innerHTML = '';
+                showLoading(popularDishesContainer, "Loading popular dishes...");
+                popularDishesContainer.classList.add('tab-content-enter'); 
+            }
 
             let allMealIds = new Set();
             let fetchedFullMeals = [];
@@ -493,7 +1001,8 @@
                         })
                         .catch(err => {
                             console.warn(`Could not fetch category ${category} for popular dishes:`, err);
-                            return null;
+                            // Do not rethrow here, allow other fetches to proceed
+                            return null; 
                         });
                 });
 
@@ -520,7 +1029,7 @@
                 popularDishes = [];
             } finally {
                 loading = false;
-                renderPopularDishes(); 
+                renderPopularDishes(); // Render new content
                 updateErrorDisplay();
                 updateSectionVisibility(); 
             }
@@ -551,7 +1060,12 @@
             loading = true; 
             error = null; 
             categories = []; 
-            renderCategories(); 
+            // Clear container and show loading right away
+            if (categoriesContainer) {
+                categoriesContainer.innerHTML = '';
+                showLoading(categoriesContainer, "Loading categories...");
+                categoriesContainer.classList.add('tab-content-enter');
+            }
 
             try {
                 const url = `${MEALDB_CATEGORIES_URL}`;
@@ -571,19 +1085,25 @@
                 error = `Failed to fetch categories: ${err.message}. This might be a network issue or TheMealDB API is unreachable.`;
             } finally {
                 loading = false;
-                renderCategories(); 
+                renderCategories(); // Render new content
                 updateErrorDisplay();
                 updateSectionVisibility(); 
             }
         }
 
         function triggerInitialDataFetches() {
+            // These calls will now immediately show loading spinners
             setTimeout(() => fetchPopularDishes(), 50);
             setTimeout(() => fetchCategories(), 150);
             setTimeout(() => fetchSavedRecipes(), 250);
         }
         
+        // Modified saveRecipe to use currentUsername for local storage key
         async function saveRecipe(recipe) {
+            if (!isLoggedIn && !isGuest) {
+                showPopupMessage("Please log in or skip to save recipes!", 'error');
+                return;
+            }
             const isAlreadySavedLocally = savedRecipes.some(saved => saved.idMeal === recipe.idMeal);
             if (isAlreadySavedLocally) {
                 showPopupMessage("Recipe already saved locally!", 'info');
@@ -600,24 +1120,31 @@
                     savedAt: new Date().toISOString()
                 };
                 const updatedLocalRecipes = [...savedRecipes, newLocalRecipe];
-                localStorage.setItem('localSavedRecipes', JSON.stringify(updatedLocalRecipes));
-                showPopupMessage("Recipe saved successfully (local)!");
-                fetchSavedRecipes(); 
+                const storageKey = isGuest ? `localSavedRecipes_guest` : `localSavedRecipes_${currentUsername}`;
+                localStorage.setItem(storageKey, JSON.stringify(updatedLocalRecipes));
+                showPopupMessage("Recipe saved successfully!");
+                fetchSavedRecipes(); // Re-fetch to update the UI
             } catch (err) {
                 console.error("Error saving recipe to local storage:", err);
-                showPopupMessage(`Failed to save recipe locally: ${err.message}`, 'error');
+                showPopupMessage(`Failed to save recipe: ${err.message}`, 'error');
             }
         }
 
+        // Modified removeRecipe to use currentUsername for local storage key
         async function removeRecipe(identifierToRemove) { 
+            if (!isLoggedIn && !isGuest) {
+                showPopupMessage("Not logged in. Cannot remove recipes.", 'error');
+                return;
+            }
             try {
                 const updatedLocalRecipes = savedRecipes.filter(recipe => recipe.localId !== identifierToRemove);
-                localStorage.setItem('localSavedRecipes', JSON.stringify(updatedLocalRecipes));
-                showPopupMessage("Recipe removed successfully (local)!");
-                fetchSavedRecipes(); 
+                const storageKey = isGuest ? `localSavedRecipes_guest` : `localSavedRecipes_${currentUsername}`;
+                localStorage.setItem(storageKey, JSON.stringify(updatedLocalRecipes));
+                showPopupMessage("Recipe removed successfully!");
+                fetchSavedRecipes(); // Re-fetch to update the UI
             } catch (err) {
                 console.error("Error removing recipe from local storage:", err);
-                showPopupMessage(`Failed to remove recipe locally: ${err.message}`, 'error');
+                showPopupMessage(`Failed to remove recipe: ${err.message}`, 'error');
             }
         }
 
@@ -635,7 +1162,7 @@
         // --- Event Handlers ---
         function handleSearch() {
             if (searchTerm.trim()) {
-                activeTab = 'search'; 
+                setActiveTab('search'); 
                 fetchRecipes(searchTerm, 'search');
             } else {
                 error = "Please enter a recipe name to search.";
@@ -644,10 +1171,56 @@
         }
 
         function handleCategoryClick(categoryName) {
-            searchTerm = ''; 
-            activeTab = 'search'; 
-            fetchRecipes(categoryName, 'category');
-            updateSectionVisibility(); // Ensure sections visibility is updated
+            searchTerm = ''; // Clear existing search term if any
+            setActiveTab('search'); 
+            fetchRecipes(categoryName, 'category'); // Fetch by category, which will then render results
+        }
+
+        // --- Authentication Functions ---
+        function handleAuth(isRegister) {
+            authMessage = ''; // Clear previous messages
+            if (loginEmail.trim() === '' || loginPassword.trim() === '') {
+                showPopupMessage("Please enter both email and password.", 'error');
+                return;
+            }
+
+            // In this "sake" authentication, any non-empty email/password combination works
+            // and the email is used as the user identifier.
+            isLoggedIn = true;
+            isGuest = false;
+            currentUsername = loginEmail.trim();
+            localStorage.setItem('loggedInUser', currentUsername);
+            localStorage.removeItem('guestUser'); // Remove guest status if they log in
+            showPopupMessage(`Welcome, ${currentUsername}!`);
+            
+            // Re-render app to show main content
+            renderApp();
+            triggerInitialDataFetches(); // Trigger data fetches immediately upon login/auth
+        }
+
+        function handleSkip() {
+            isLoggedIn = false;
+            isGuest = true;
+            currentUsername = 'Guest_' + Math.random().toString(36).substring(2, 9); // Generate a temporary guest ID
+            localStorage.setItem('guestUser', currentUsername); // Store guest status
+            localStorage.removeItem('loggedInUser'); // Ensure loggedInUser is cleared
+            showPopupMessage(`Browsing as Guest.`);
+            
+            renderApp();
+            triggerInitialDataFetches(); // Trigger data fetches immediately upon skipping
+        }
+
+        function handleLogout() {
+            isLoggedIn = false;
+            isGuest = false;
+            currentUsername = '';
+            localStorage.removeItem('loggedInUser');
+            localStorage.removeItem('guestUser'); // Clear guest status on logout
+            savedRecipes = []; // Clear in-memory saved recipes for the logged out user
+            showPopupMessage("Logged out successfully.");
+            
+            // Re-render app to show login page
+            renderApp();
         }
 
         // --- UI Rendering Functions ---
@@ -670,37 +1243,140 @@
             }
             
             // Only render main app content once it's initialized and splash screen fades
-            if (isAppInitialized) {
-                rootDiv.style.display = 'block'; // Make root visible
-                rootDiv.className = "min-h-screen bg-gradient-to-br from-slate-800 to-neutral-900 p-4 sm:p-8 flex flex-col items-center";
-                renderMainAppContent();
-            } else {
+            if (!isAppInitialized) {
                 rootDiv.style.display = 'none'; // Keep root hidden initially
+                return;
+            }
+
+            rootDiv.style.display = 'block'; // Make root visible
+
+            if (!isLoggedIn && !isGuest) {
+                renderAuthPage();
+            } else {
+                renderMainAppContent();
+            }
+        }
+
+        function renderAuthPage() {
+            // Apply new auth-background class here
+            rootDiv.className = "min-h-screen flex items-center justify-center p-4 sm:p-8 auth-background"; 
+            rootDiv.innerHTML = `
+                <div class="auth-form-container text-center bg-white bg-opacity-90 rounded-2xl shadow-2xl p-6 sm:p-8 transform transition-all duration-300 hover:scale-105">
+                    <h2 class="auth-title text-4xl font-extrabold mb-6 drop-shadow-lg">Welcome to Flavorz!</h2>
+                    <p class="auth-tagline text-lg mb-8 font-medium">Discover delicious recipes from around the world.</p>
+                    <div class="mb-5">
+                        <label for="loginEmail" class="block text-gray-800 text-sm font-semibold mb-2 text-left">Email Address</label>
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            value="${loginEmail}"
+                            placeholder="your.email@example.com"
+                            class="auth-input w-full"
+                            style="animation-delay: 0.4s;"
+                        />
+                    </div>
+                    <div class="mb-8">
+                        <label for="loginPassword" class="block text-gray-800 text-sm font-semibold mb-2 text-left">Password</label>
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            value="${loginPassword}"
+                            placeholder="••••••••"
+                            class="auth-input w-full"
+                            style="animation-delay: 0.6s;"
+                        />
+                    </div>
+                    <div class="flex flex-col gap-4">
+                        <button
+                            id="signInButton"
+                            class="auth-button w-full btn-primary"
+                            style="animation-delay: 0.8s;"
+                        >
+                            Sign In
+                        </button>
+                        <button
+                            id="signUpButton"
+                            class="auth-button w-full btn-secondary"
+                            style="animation-delay: 1.0s;"
+                        >
+                            Create Account
+                        </button>
+                        <button
+                            id="skipButton"
+                            class="auth-button w-full btn-skip"
+                            style="animation-delay: 1.2s;"
+                        >
+                            Browse as Guest
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // Attach event listeners for the authentication page
+            const loginEmailInput = document.getElementById('loginEmail');
+            const loginPasswordInput = document.getElementById('loginPassword');
+            const signInButton = document.getElementById('signInButton');
+            const signUpButton = document.getElementById('signUpButton');
+            const skipButton = document.getElementById('skipButton');
+
+            if (loginEmailInput) {
+                loginEmailInput.addEventListener('input', (e) => {
+                    loginEmail = e.target.value;
+                });
+            }
+            if (loginPasswordInput) {
+                loginPasswordInput.addEventListener('input', (e) => {
+                    loginPassword = e.target.value;
+                });
+                loginPasswordInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') handleAuth(false); // Default to sign in on Enter
+                });
+            }
+            if (signInButton) {
+                signInButton.addEventListener('click', () => handleAuth(false));
+            }
+            if (signUpButton) {
+                signUpButton.addEventListener('click', () => handleAuth(true));
+            }
+            if (skipButton) {
+                skipButton.addEventListener('click', handleSkip);
             }
         }
 
         function renderMainAppContent() {
+            rootDiv.className = "min-h-screen p-4 sm:p-8 flex flex-col items-center";
             rootDiv.innerHTML = `
-                <header class="w-full max-w-6xl text-white mb-8 flex flex-col items-center justify-center">
+                <header id="main-header" class="w-full max-w-6xl text-center text-white mb-8 flex flex-col items-center justify-center parallax-element" data-speed="0.1">
                     <h1 class="text-4xl sm:text-5xl font-extrabold mb-2 leading-tight main-title text-center">
                         Flavorz
                     </h1>
-                    <p class="text-lg sm:text-xl font-light opacity-90 text-center main-tagline">A world of tastes!</p>
+                    <p class="main-tagline text-center">A world of tastes!</p>
+                    <div class="flex items-center justify-center space-x-4 mt-4">
+                        <p class="text-sm text-white/80">
+                            ${isGuest ? 'Browsing as: <span class="font-semibold" id="currentUsernameDisplay">Guest</span>' : 'Logged in as: <span class="font-semibold" id="currentUsernameDisplay">' + currentUsername + '</span>'}
+                        </p>
+                        <button
+                            id="logoutButton"
+                            class="px-4 py-2 bg-red-500 text-white text-sm font-semibold rounded-lg hover:bg-red-600 transition-colors shadow-md"
+                        >
+                            ${isGuest ? 'End Guest Session' : 'Log Out'}
+                        </button>
+                    </div>
                     <div id="errorDisplay" class="mt-4"></div>
                 </header>
 
-                <div class="w-full max-w-full lg:max-w-7xl bg-white bg-opacity-90 rounded-2xl shadow-xl p-6 mb-8 mx-auto">
+                <div id="main-content-box" class="w-full max-w-full lg:max-w-7xl rounded-2xl shadow-xl p-6 mb-8 mx-auto parallax-element" data-speed="0.25">
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
                         <input
                             type="text"
                             id="searchTermInput"
                             value="${searchTerm}"
                             placeholder="Search for a recipe (e.g., pasta, chicken)"
-                            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-700 shadow-sm"
+                            class="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-gray-700"
                         />
                         <button
                             id="searchButton"
-                            class="w-full sm:w-auto px-6 py-3 bg-sky-600 text-white font-semibold rounded-lg hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-opacity-50 transition ease-in-out duration-150 shadow-md"
+                            class="w-full sm:w-auto px-6 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition ease-in-out duration-150 shadow-md"
                         >
                             Search Recipes
                         </button>
@@ -709,27 +1385,27 @@
                     <div class="flex justify-center space-x-4 mb-6">
                         <button
                             id="homeTabButton"
-                            class="px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out ${activeTab === 'home' ? 'bg-indigo-500 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+                            class="px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out tab-button ${activeTab === 'home' ? 'bg-indigo-500 text-white shadow-md active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
                         >
                             Home
                         </button>
                         <button
                             id="searchTabButton"
-                            class="px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out ${activeTab === 'search' ? 'bg-indigo-500 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+                            class="px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out tab-button ${activeTab === 'search' ? 'bg-indigo-500 text-white shadow-md active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
                         >
                             Search Results
                         </button>
                         <button
                             id="savedTabButton"
-                            class="px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out ${activeTab === 'saved' ? 'bg-indigo-500 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+                            class="px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out tab-button ${activeTab === 'saved' ? 'bg-indigo-500 text-white shadow-md active' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
                         >
                             My Saved Recipes (<span id="savedRecipesCount">${savedRecipes.length}</span>)
                         </button>
                     </div>
 
-                    <div id="initialSectionsWrapper">
+                    <div id="initialSectionsWrapper" class="${activeTab === 'home' ? 'tab-content-enter' : 'tab-content-exit'}">
                         <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8 text-center">Browse Categories</h2>
-                        <div id="categoriesContainer" class="flex flex-wrap justify-center gap-3 mb-8 max-h-48 overflow-y-auto p-2 rounded-lg bg-gray-100 custom-scroll-y shadow-inner"></div>
+                        <div id="categoriesContainer" class="flex flex-wrap justify-center gap-3 mb-8 max-h-48 overflow-y-auto p-2 rounded-lg custom-scroll-y"></div>
                         
                         <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8 text-center">Popular Dishes</h2>
                         <div id="popularDishesContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 mb-8"></div>
@@ -739,7 +1415,7 @@
                     <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-8 text-center" id="dynamicContentTitle">
                         ${activeTab === 'search' ? 'Search & Category Results' : 'Your Saved Recipes'}
                     </h2>
-                    <div id="dynamicContentContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6"></div>
+                    <div id="dynamicContentContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 ${activeTab !== 'home' ? 'tab-content-enter' : 'tab-content-exit'}"></div>
                 </div>
 
                 <div id="recipeDetailModal" class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto"></div>
@@ -756,6 +1432,12 @@
             categoriesContainer = document.getElementById('categoriesContainer');
             dynamicContentContainer = document.getElementById('dynamicContentContainer');
             initialSectionsWrapper = document.getElementById('initialSectionsWrapper'); 
+            currentUsernameDisplayEl = document.getElementById('currentUsernameDisplay'); 
+
+            // Get parallax elements
+            parallaxHeaderContent = document.getElementById('main-header');
+            parallaxMainContentBox = document.getElementById('main-content-box');
+            mainTaglineEl = document.querySelector('.main-tagline'); 
 
             // Set initial values
             if (error) showError(errorDisplayEl, error);
@@ -771,53 +1453,173 @@
             }
             if (searchButtonEl) searchButtonEl.addEventListener('click', handleSearch);
             if (homeTabButton) homeTabButton.addEventListener('click', () => { 
-                activeTab = 'home'; 
-                searchTerm = ''; 
-                recipes = []; 
-                noResults = false; 
-                updateSectionVisibility(); 
-                fetchPopularDishes(); 
-                fetchCategories(); 
-                renderApp(); 
+                if (activeTab !== 'home') {
+                    // Apply exit animation to current content
+                    const currentWrapper = activeTab === 'home' ? initialSectionsWrapper : dynamicContentContainer;
+                    if (currentWrapper) currentWrapper.classList.replace('tab-content-enter', 'tab-content-exit');
+                    setTimeout(() => {
+                        activeTab = 'home'; 
+                        searchTerm = ''; 
+                        recipes = []; 
+                        noResults = false; 
+                        updateSectionVisibility(); 
+                        fetchPopularDishes(); 
+                        fetchCategories(); 
+                        // Removed renderApp() here as it causes full re-render
+                    }, 400); // Allow exit animation to complete
+                }
             });
             if (searchTabButton) searchTabButton.addEventListener('click', () => {
-                activeTab = 'search';
-                if (searchTerm.trim() !== '') {
-                     fetchRecipes(searchTerm, 'search');
-                } else {
-                    recipes = []; 
-                    noResults = false; 
-                    renderApp(); 
+                if (activeTab !== 'search') {
+                    const currentWrapper = activeTab === 'home' ? initialSectionsWrapper : dynamicContentContainer;
+                    if (currentWrapper) currentWrapper.classList.replace('tab-content-enter', 'tab-content-exit');
+                    setTimeout(() => {
+                        activeTab = 'search';
+                        // When manually switching to search, just re-render current state (loading, or previous results, or prompt)
+                        renderDynamicContent(); // This will ensure the prompt/loading is shown correctly
+                        updateSectionVisibility(); 
+                        // Removed renderApp() here as it causes full re-render
+                    }, 400);
                 }
-                updateSectionVisibility(); 
             });
             if (savedTabButton) savedTabButton.addEventListener('click', () => {
-                activeTab = 'saved';
-                updateSectionVisibility(); 
-                fetchSavedRecipes();
-                renderApp(); 
+                if (activeTab !== 'saved') {
+                    const currentWrapper = activeTab === 'home' ? initialSectionsWrapper : dynamicContentContainer;
+                    if (currentWrapper) currentWrapper.classList.replace('tab-content-enter', 'tab-content-exit');
+                    setTimeout(() => {
+                        activeTab = 'saved';
+                        updateSectionVisibility(); 
+                        fetchSavedRecipes();
+                        // Removed renderApp() here as it causes full re-render
+                    }, 400);
+                }
             });
+            // Add logout button listener
+            const logoutButton = document.getElementById('logoutButton');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', handleLogout);
+            }
 
             // Render initial dynamic content
             renderPopularDishes();
             renderCategories();
             renderDynamicContent();
             updateSectionVisibility(); 
-
+            
             // Render modal if selectedRecipe exists
             renderRecipeDetailModal();
+            
+            // Initialize parallax after elements are in DOM
+            initParallax();
+        }
+
+        // --- Parallax Logic ---
+        let ticking = false;
+
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+
+            // Header parallax
+            if (parallaxHeaderContent) {
+                const speed = parseFloat(parallaxHeaderContent.dataset.speed || 0);
+                const translateY = -scrolled * speed;
+                parallaxHeaderContent.style.transform = `translateY(${translateY}px)`;
+            }
+
+            // Main content box parallax
+            if (parallaxMainContentBox) {
+                const speed = parseFloat(parallaxMainContentBox.dataset.speed || 0);
+                const translateY = -scrolled * speed;
+                parallaxMainContentBox.style.transform = `translateY(${translateY}px)`;
+            }
+
+            ticking = false;
+        }
+
+        function initParallax() {
+            // Only add event listener once
+            if (!window.parallaxEventListenerInitialized) {
+                window.addEventListener('scroll', () => {
+                    if (!ticking) {
+                        window.requestAnimationFrame(updateParallax);
+                        ticking = true;
+                    }
+                });
+                window.parallaxEventListenerInitialized = true;
+            }
+            // Call update once to set initial positions
+            updateParallax();
+        }
+
+
+        function setActiveTab(tabName) {
+            // This function handles the state change and initiates the transition
+            if (activeTab === tabName) return;
+
+            const prevActiveTab = activeTab;
+            activeTab = tabName; // Update the global active tab state immediately
+
+            // Apply exit animation to the current content wrapper
+            if (prevActiveTab === 'home') {
+                if (initialSectionsWrapper) initialSectionsWrapper.classList.replace('tab-content-enter', 'tab-content-exit');
+            } else { // 'search' or 'saved'
+                if (dynamicContentContainer) dynamicContentContainer.classList.replace('tab-content-enter', 'tab-content-exit');
+            }
+
+            // After the exit animation, render the new content and apply its enter animation
+            setTimeout(() => {
+                updateSectionVisibility(); // This will update display properties and apply 'tab-content-enter'
+                if (activeTab === 'home') {
+                    // Only re-fetch if popular dishes or categories are currently empty,
+                    // or if not currently loading, to avoid redundant fetches on quick switches.
+                    if ((popularDishes.length === 0 && categories.length === 0) && !loading) {
+                        fetchPopularDishes();
+                        fetchCategories();
+                    } else {
+                        // If data is already there, just render it (to apply enter animation)
+                        renderPopularDishes();
+                        renderCategories();
+                    }
+                } else if (activeTab === 'search') {
+                    // When switching to 'search', render whatever is currently in `recipes` (could be results from a category click,
+                    // or empty if no search was done). `fetchRecipes` will update and re-render when its async call resolves.
+                    renderDynamicContent();
+                } else if (activeTab === 'saved') {
+                    fetchSavedRecipes();
+                }
+            }, 300); // This timeout should match or be slightly less than the fadeOutContent animation duration
         }
 
 
         function updateSectionVisibility() {
             if (initialSectionsWrapper) {
+                // Ensure correct classes for tab content transitions
                 if (activeTab === 'home') {
                     initialSectionsWrapper.style.display = 'block'; 
+                    initialSectionsWrapper.classList.add('tab-content-enter');
+                    initialSectionsWrapper.classList.remove('tab-content-exit');
                 } else {
+                    // Hide content instantly to prevent visual flicker before animation
                     initialSectionsWrapper.style.display = 'none'; 
+                    initialSectionsWrapper.classList.remove('tab-content-enter');
+                    initialSectionsWrapper.classList.add('tab-content-exit');
                 }
             }
             
+            // Apply correct classes for the dynamic content container based on activeTab
+            if (dynamicContentContainer) {
+                if (activeTab !== 'home') {
+                    dynamicContentContainer.style.display = 'grid'; // Ensure grid display for results
+                    dynamicContentContainer.classList.add('tab-content-enter');
+                    dynamicContentContainer.classList.remove('tab-content-exit');
+                } else {
+                    dynamicContentContainer.style.display = 'none';
+                    dynamicContentContainer.classList.remove('tab-content-enter');
+                    dynamicContentContainer.classList.add('tab-content-exit');
+                }
+            }
+
+
             const buttons = [homeTabButton, searchTabButton, savedTabButton];
             buttons.forEach(button => {
                 if (button) {
@@ -825,9 +1627,9 @@
                     const isActive = buttonId === activeTab;
                     
                     if (isActive) {
-                        button.className = "px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out bg-indigo-500 text-white shadow-md";
+                        button.className = "px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out tab-button bg-indigo-500 text-white shadow-md active";
                     } else {
-                        button.className = "px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out bg-gray-200 text-gray-700 hover:bg-gray-300";
+                        button.className = "px-5 py-2 rounded-lg font-medium transition duration-200 ease-in-out tab-button bg-gray-200 text-gray-700 hover:bg-gray-300";
                     }
                 }
             });
@@ -849,45 +1651,46 @@
             }
         }
 
-        function renderPopularDishes() {
-            if (initialSectionsWrapper && initialSectionsWrapper.style.display === 'block') {
-                popularDishesContainer.innerHTML = '';
-                if (loading && popularDishes.length === 0) {
-                    showLoading(popularDishesContainer, "Loading popular dishes...");
-                } else if (popularDishes.length > 0) {
-                    popularDishes.forEach(recipe => {
-                        popularDishesContainer.appendChild(createRecipeCard(recipe, true, false));
-                    });
-                } else if (!loading && error && error.includes("popular dishes")) {
-                    popularDishesContainer.innerHTML = `<p class="text-center text-gray-600 font-medium col-span-full">${error}</p>`;
-                } else if (!loading) {
-                    popularDishesContainer.innerHTML = `<p class="text-center text-gray-600 font-medium col-span-full">No popular dishes found yet.</p>`;
-                }
-            } else {
-                popularDishesContainer.innerHTML = ''; 
+        function renderPopularDishes() { // Removed triggerExit parameter
+            if (!popularDishesContainer) return; 
+            
+            popularDishesContainer.innerHTML = ''; // Always clear before rendering new state
+            if (loading && popularDishes.length === 0) { // If loading and no data yet
+                showLoading(popularDishesContainer, "Loading popular dishes...");
+            } else if (popularDishes.length > 0) {
+                popularDishes.forEach((recipe, index) => {
+                    const card = createRecipeCard(recipe, true, false, index); // Pass index
+                    card.style.animationDelay = `${index * 0.05}s`; // Stagger animation
+                    popularDishesContainer.appendChild(card);
+                });
+                popularDishesContainer.classList.add('tab-content-enter'); // Apply entrance animation
+            } else if (!loading && error && error.includes("popular dishes")) {
+                popularDishesContainer.innerHTML = `<p class="text-center text-gray-600 font-medium col-span-full">${error}</p>`;
+            } else if (!loading) { // If not loading and no dishes, display "No dishes"
+                popularDishesContainer.innerHTML = `<p class="text-center text-gray-600 font-medium col-span-full">No popular dishes found yet. Check your network or try again later.</p>`;
             }
         }
 
-        function renderCategories() {
-            if (initialSectionsWrapper && initialSectionsWrapper.style.display === 'block') {
-                categoriesContainer.innerHTML = '';
-                if (loading && categories.length === 0) {
-                    showLoading(categoriesContainer, "Loading categories...");
-                } else if (categories.length > 0) {
-                    categories.forEach(category => {
-                        const button = document.createElement('button');
-                        button.className = "px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-semibold hover:bg-emerald-700 transition-colors shadow-sm";
-                        button.textContent = category.strCategory;
-                        button.addEventListener('click', () => handleCategoryClick(category.strCategory));
-                        categoriesContainer.appendChild(button);
-                    });
-                } else if (!loading && error && error.includes("categories")) {
-                    categoriesContainer.innerHTML = `<p class="text-center text-gray-600 text-sm">${error}</p>`;
-                } else if (!loading) {
-                    categoriesContainer.innerHTML = `<p class="text-center text-gray-600 text-sm">No categories found yet.</p>`;
-                }
-            } else {
-                categoriesContainer.innerHTML = ''; 
+        function renderCategories() { // Removed triggerExit parameter
+            if (!categoriesContainer) return;
+
+            categoriesContainer.innerHTML = ''; // Always clear before rendering new state
+            if (loading && categories.length === 0) { // If loading and no data yet
+                showLoading(categoriesContainer, "Loading categories...");
+                categoriesContainer.classList.add('tab-content-enter');
+            } else if (categories.length > 0) {
+                categories.forEach(category => {
+                    const button = document.createElement('button');
+                    button.className = "px-4 py-2 bg-emerald-600 text-white rounded-full text-sm font-semibold hover:bg-emerald-700 transition-colors shadow-sm";
+                    button.textContent = category.strCategory;
+                    button.addEventListener('click', () => handleCategoryClick(category.strCategory));
+                    categoriesContainer.appendChild(button);
+                });
+                categoriesContainer.classList.add('tab-content-enter');
+            } else if (!loading && error && error.includes("categories")) {
+                categoriesContainer.innerHTML = `<p class="text-center text-gray-600 text-sm">${error}</p>`;
+            } else if (!loading) {
+                categoriesContainer.innerHTML = `<p class="text-center text-gray-600 text-sm">No categories found yet. Check your network or try again later.</p>`;
             }
         }
 
@@ -897,26 +1700,48 @@
             if (dynamicContentTitleEl) {
                 dynamicContentTitleEl.textContent = activeTab === 'search' ? 'Search & Category Results' : 'Your Saved Recipes';
             }
+            if (!dynamicContentContainer) return;
+
+            // If loading is true for the current active tab (and it's not 'home' for which
+            // separate loading is handled), show loading spinner. This condition is crucial
+            // to display the spinner immediately when `fetchRecipes` or `fetchSavedRecipes` starts.
+            if (loading && activeTab !== 'home') {
+                // Only clear if the current content isn't already the loading spinner
+                // to avoid flickering the spinner itself.
+                if (!dynamicContentContainer.querySelector('.spinner')) {
+                     dynamicContentContainer.innerHTML = '';
+                     showLoading(dynamicContentContainer, "Loading recipes...");
+                     dynamicContentContainer.classList.add('tab-content-enter'); // Ensure it animates in with loading state
+                }
+                return; // Exit, as we are in a loading state and only want to show the spinner for now
+            }
+
+            // If we reach here, `loading` is false, meaning data fetching has completed.
+            // Clear any lingering loading spinner or old content before rendering new data.
             dynamicContentContainer.innerHTML = ''; 
 
-            if (loading) { 
-                showLoading(dynamicContentContainer, "Loading recipes...");
-            } else if (activeTab === 'search') {
+            if (activeTab === 'search') {
                 if (recipes.length > 0) {
-                    recipes.forEach(recipe => {
-                        dynamicContentContainer.appendChild(createRecipeCard(recipe, true, false));
+                    recipes.forEach((recipe, index) => {
+                        const card = createRecipeCard(recipe, true, false, index); // Pass index
+                        card.style.animationDelay = `${index * 0.05}s`; // Stagger animation
+                        dynamicContentContainer.appendChild(card);
                     });
-                } else if (searchTerm.trim() !== '' && noResults) { 
-                    dynamicContentContainer.innerHTML = `<p class="text-center text-gray-600 font-medium mb-4 col-span-full">No recipes found for "${searchTerm}". Try a different keyword or category!</p>`;
-                } else { 
-                    dynamicContentContainer.innerHTML = `<p class="text-center text-gray-600 font-medium mb-4 col-span-full text-lg">Start by searching for a recipe above or select a category from the Home tab!</p>`;
+                    dynamicContentContainer.classList.add('tab-content-enter'); // Apply entrance animation
+                } else if (noResults) { 
+                    dynamicContentContainer.innerHTML = `<p class="text-center text-gray-600 font-medium mb-4 col-span-full">No recipes found for your query. Try a different keyword or category!</p>`;
+                } else { // Default state for search tab when no search has been performed or cleared
+                     dynamicContentContainer.innerHTML = `<p class="text-center text-gray-600 font-medium mb-4 col-span-full text-lg">Start by searching for a recipe above or select a category from the Home tab!</p>`;
                 }
             } else if (activeTab === 'saved') {
                 updateSavedRecipesCount();
                 if (savedRecipes.length > 0) {
-                    savedRecipes.forEach(recipe => {
-                        dynamicContentContainer.appendChild(createRecipeCard(recipe, true, true));
+                    savedRecipes.forEach((recipe, index) => {
+                        const card = createRecipeCard(recipe, true, true, index); // Pass index
+                        card.style.animationDelay = `${index * 0.05}s`; // Stagger animation
+                        dynamicContentContainer.appendChild(card);
                     });
+                    dynamicContentContainer.classList.add('tab-content-enter'); // Apply entrance animation
                 } else {
                     dynamicContentContainer.innerHTML = `<p class="text-center text-gray-600 font-medium mb-4 col-span-full">You haven't saved any recipes yet!</p>`;
                 }
@@ -924,9 +1749,13 @@
             updateErrorDisplay(); 
         }
 
-        function createRecipeCard(recipe, showSave, showRemove) {
+        function createRecipeCard(recipe, showSave, showRemove, index = 0) {
             const cardDiv = document.createElement('div');
-            cardDiv.className = "bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform duration-200 hover:scale-105 flex flex-col";
+            // Cycle through different background and title color gradients
+            const bgClass = `card-bg-gradient-${(index % 6) + 1}`;
+            const titleClass = `card-title-color-${(index % 6) + 1}`;
+
+            cardDiv.className = `rounded-xl shadow-lg overflow-hidden transform transition-transform duration-200 hover:scale-105 flex flex-col recipe-card-animated ${bgClass}`;
 
             const imageUrl = recipe.strMealThumb || `https://placehold.co/400x300/FDBA74/8B5CF6?text=No+Image`;
 
@@ -939,14 +1768,14 @@
                 />
                 <div class="p-4 flex-grow flex flex-col justify-between">
                     <div>
-                        <h2 class="text-xl font-bold text-gray-800 mb-2 leading-tight cursor-pointer hover:text-indigo-400 transition-colors">
+                        <h2 class="text-xl font-bold mb-2 leading-tight cursor-pointer hover:underline ${titleClass}">
                             ${recipe.strMeal}
                         </h2>
-                        <p class="text-gray-600 text-sm">Category: ${recipe.strCategory || 'N/A'}</p>
-                        <p class="text-gray-600 text-sm">Area: ${recipe.strArea || 'N/A'}</p>
+                        <p class="text-gray-700 text-sm">Category: <span class="font-medium">${recipe.strCategory || 'N/A'}</span></p>
+                        <p class="text-gray-700 text-sm">Area: <span class="font-medium">${recipe.strArea || 'N/A'}</span></p>
                     </div>
                     <div class="mt-4 flex justify-end" id="actionButtons-${recipe.idMeal || recipe.localId}">
-                        </div>
+                    </div>
                 </div>
             `;
 
@@ -958,28 +1787,36 @@
             const actionButtonsContainer = cardDiv.querySelector(`#actionButtons-${recipe.idMeal || recipe.localId}`);
 
             const isCurrentRecipeSaved = savedRecipes.some(saved => saved.idMeal === recipe.idMeal);
+            if (isCurrentRecipeSaved && !actionButtonsContainer.querySelector('.saved-label')) {
+                 const savedSpan = document.createElement('span');
+                 savedSpan.className = "text-gray-800 text-sm px-4 py-2 saved-label font-semibold";
+                 savedSpan.textContent = "Saved!";
+                 actionButtonsContainer.appendChild(savedSpan);
+             }
 
-            if (showSave && !isCurrentRecipeSaved) {
-                const saveButton = document.createElement('button');
-                saveButton.className = "bg-green-500 text-white text-sm px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors shadow-md";
-                saveButton.textContent = "Save";
-                saveButton.addEventListener('click', () => saveRecipe(recipe));
-                actionButtonsContainer.appendChild(saveButton);
-            } else if (showRemove && isCurrentRecipeSaved) {
-                const removeButton = document.createElement('button');
-                removeButton.className = "bg-red-500 text-white text-sm px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors shadow-md";
-                removeButton.textContent = "Remove";
-                const recipeToRemove = savedRecipes.find(saved => saved.idMeal === recipe.idMeal);
-                const identifierForRemoval = recipeToRemove.localId; 
+            // Only show save/remove if the user is authenticated (not a guest), unless saving as guest is explicitly enabled
+            if (isLoggedIn || isGuest) { // Allow guests to save locally too
+                if (showSave && !isCurrentRecipeSaved) {
+                    const saveButton = document.createElement('button');
+                    saveButton.className = "bg-green-500 text-white text-sm px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors shadow-md";
+                    saveButton.textContent = "Save";
+                    saveButton.addEventListener('click', () => saveRecipe(recipe));
+                    actionButtonsContainer.appendChild(saveButton);
+                } else if (showRemove && isCurrentRecipeSaved) {
+                    const removeButton = document.createElement('button');
+                    removeButton.className = "bg-red-500 text-white text-sm px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition-colors shadow-md";
+                    removeButton.textContent = "Remove";
+                    const recipeToRemove = savedRecipes.find(saved => saved.idMeal === recipe.idMeal);
+                    const identifierForRemoval = recipeToRemove.localId; 
 
-                removeButton.addEventListener('click', () => removeRecipe(identifierForRemoval));
-                actionButtonsContainer.appendChild(removeButton);
-            } else if (showSave && isCurrentRecipeSaved) {
-                const savedSpan = document.createElement('span');
-                savedSpan.className = "text-gray-500 text-sm px-4 py-2";
-                savedSpan.textContent = "Saved!";
-                actionButtonsContainer.appendChild(savedSpan);
+                    removeButton.addEventListener('click', () => removeRecipe(identifierForRemoval));
+                    actionButtonsContainer.appendChild(removeButton);
+                } else if (showSave && isCurrentRecipeSaved) {
+                    // If it's already saved and we are in a context that shows save button (like popular dishes), show "Saved!"
+                    // This is handled by the `isCurrentRecipeSaved` check at the top of the function
+                }
             }
+
 
             return cardDiv;
         }
@@ -1070,9 +1907,16 @@
                 </div>
             `;
             document.getElementById('modalCloseButton').addEventListener('click', closeRecipeModal);
+            // New: Close modal when clicking on the overlay, but not on modal content
+            modalEl.addEventListener('click', (event) => {
+                if (event.target === modalEl) {
+                    closeRecipeModal();
+                }
+            });
+
 
             const modalActionButtons = document.getElementById('modalActionButtons');
-            if (modalActionButtons) {
+            if (modalActionButtons && (isLoggedIn || isGuest)) { // Only show save/remove if authenticated or guest
                 if (!isCurrentRecipeSaved) {
                     const saveBtn = document.createElement('button');
                     saveBtn.className = "bg-green-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md";
@@ -1098,39 +1942,52 @@
         }
 
 
-        // --- Firebase/Local Storage and Data Fetching Logic ---
+        // --- Authentication Initialization ---
+        async function initializeAuth() {
+            const storedLoggedInUser = localStorage.getItem('loggedInUser');
+            const storedGuestUser = localStorage.getItem('guestUser');
 
-        async function initializeFirebaseAndAuth() {
-            console.warn("Firebase authentication is disabled. Saved recipes will be managed via local storage.");
-            db = null; 
-            auth = null; 
-            isFirebaseEnabled = false; 
-            currentUserIdForStorage = 'local_user_' + Math.random().toString(36).substring(2, 9); 
-            isAppInitialized = true; 
-            // Call renderApp() which will now decide to show root or not based on isAppInitialized
-            renderApp(); 
-            triggerInitialDataFetches(); 
+            if (storedLoggedInUser) {
+                isLoggedIn = true;
+                isGuest = false;
+                currentUsername = storedLoggedInUser;
+            } else if (storedGuestUser) {
+                isLoggedIn = false;
+                isGuest = true;
+                currentUsername = storedGuestUser;
+            } else {
+                isLoggedIn = false;
+                isGuest = false;
+                currentUsername = '';
+            }
+            isAppInitialized = true; // App is ready to render based on auth state
+            renderApp(); // Render either login/auth or main content.
         }
 
-        // --- Initialization ---
+        // --- Initial Load ---
         window.onload = async () => {
             // Immediately show splash screen
             const splashScreen = document.getElementById('splash-screen');
             splashScreen.style.display = 'flex'; // Ensure splash screen is visible
             document.body.style.overflow = 'hidden'; // Prevent scrolling during splash
 
-            // Initialize app data in the background
-            await initializeFirebaseAndAuth();
+            // Initialize authentication state in the background
+            await initializeAuth();
 
-            // After a delay, fade out splash screen and reveal main app
+            // After a delay, fade out splash screen and reveal main app/login
             setTimeout(() => {
                 splashScreen.classList.add('fade-out');
                 splashScreen.addEventListener('transitionend', () => {
                     splashScreen.style.display = 'none'; // Hide completely after fade
-                    document.getElementById('root').style.display = 'block'; // Show main app
+                    document.getElementById('root').style.display = 'block'; // Show main app/login
                     document.body.style.overflow = 'auto'; // Re-enable scrolling
+                    // Ensure parallax elements are correctly positioned after fade-in
+                    initParallax();
+                    // NEW: Trigger initial data fetches here after the splash screen fades
+                    // This ensures popular dishes and categories load right away.
+                    triggerInitialDataFetches(); 
                 }, { once: true });
-            }, 3000); // Display splash for 3 seconds
+            }, 5000); // Display splash for 5 seconds (increased from 3s)
         };
 
     </script>
