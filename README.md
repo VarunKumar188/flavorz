@@ -1,6 +1,6 @@
 🌟 Flavorz - A World of Tastes!
 Flavorz is a vibrant and interactive recipe web application that lets users explore, search, and save delicious recipes from around the world. Built using HTML, Tailwind CSS, and powered by TheMealDB API, this app offers a visually stunning UI combined with real-time search and authentication features.
-![image alt]
+![image alt](https://github.com/VarunKumar188/flavorz/blob/03c2d27dc96d0100a079e3f17c5e190c50b4761f/Screenshot%202025-07-04%20184214.png)
 🔥 Features
 🎨 Animated Splash Screen: An eye-catching animated introduction using SVG, gradients, and custom CSS animations.
 
