@@ -820,7 +820,7 @@
                 randomIndex = Math.floor(Math.random() * currentIndex);
                 currentIndex--;
                 [array[currentIndex], array[randomIndex]] = [
-                    array[randomIndex], array[randomIndex]];
+                    array[randomIndex], array[currentIndex]]; // Corrected swap logic
             }
             return array;
         }
@@ -977,7 +977,7 @@
                 popularDishesContainer.classList.add('tab-content-enter'); 
             }
 
-            let allMealIds = new Set();
+            let allMealIds = new Set(); // Use a Set to store unique meal IDs
             let fetchedFullMeals = [];
 
             try {
@@ -1008,6 +1008,7 @@
 
                 await Promise.allSettled(categoryFetchPromises);
 
+                // Shuffle the unique IDs and then slice to the maximum desired number
                 const shuffledIds = shuffleArray(Array.from(allMealIds)).slice(0, MAX_POPULAR_DISHES_TO_FETCH);
 
                 const detailFetchPromises = shuffledIds.map(id => fetchRecipeDetailsById(id));
@@ -1194,7 +1195,7 @@
             showPopupMessage(`Welcome, ${currentUsername}!`);
             
             // Re-render app to show main content
-            renderApp();
+            renderAppContentBasedOnAuth(); // Call the new function
             triggerInitialDataFetches(); // Trigger data fetches immediately upon login/auth
         }
 
@@ -1206,7 +1207,7 @@
             localStorage.removeItem('loggedInUser'); // Ensure loggedInUser is cleared
             showPopupMessage(`Browsing as Guest.`);
             
-            renderApp();
+            renderAppContentBasedOnAuth(); // Call the new function
             triggerInitialDataFetches(); // Trigger data fetches immediately upon skipping
         }
 
@@ -1220,11 +1221,13 @@
             showPopupMessage("Logged out successfully.");
             
             // Re-render app to show login page
-            renderApp();
+            renderAppContentBasedOnAuth(); // Call the new function
         }
 
         // --- UI Rendering Functions ---
-        function renderApp() {
+
+        // New function to decide whether to render auth page or main app content
+        function renderAppContentBasedOnAuth() {
             if (!rootDiv) {
                 rootDiv = document.getElementById('root');
                 if (!rootDiv) {
@@ -1248,14 +1251,19 @@
                 return;
             }
 
-            rootDiv.style.display = 'block'; // Make root visible
-
             if (!isLoggedIn && !isGuest) {
                 renderAuthPage();
             } else {
-                renderMainAppContent();
+                // Only render main app structure once
+                if (!rootDiv.querySelector('#main-header')) { // Check if main app structure is already present
+                    renderMainAppStructure();
+                }
+                // Update dynamic parts after login/logout
+                updateMainAppDynamicContent();
             }
+            rootDiv.style.display = 'block'; // Make root visible
         }
+
 
         function renderAuthPage() {
             // Apply new auth-background class here
@@ -1343,7 +1351,8 @@
             }
         }
 
-        function renderMainAppContent() {
+        // New function to render the static structure of the main app
+        function renderMainAppStructure() {
             rootDiv.className = "min-h-screen p-4 sm:p-8 flex flex-col items-center";
             rootDiv.innerHTML = `
                 <header id="main-header" class="w-full max-w-6xl text-center text-white mb-8 flex flex-col items-center justify-center parallax-element" data-speed="0.1">
@@ -1465,7 +1474,6 @@
                         updateSectionVisibility(); 
                         fetchPopularDishes(); 
                         fetchCategories(); 
-                        // Removed renderApp() here as it causes full re-render
                     }, 400); // Allow exit animation to complete
                 }
             });
@@ -1475,10 +1483,8 @@
                     if (currentWrapper) currentWrapper.classList.replace('tab-content-enter', 'tab-content-exit');
                     setTimeout(() => {
                         activeTab = 'search';
-                        // When manually switching to search, just re-render current state (loading, or previous results, or prompt)
                         renderDynamicContent(); // This will ensure the prompt/loading is shown correctly
                         updateSectionVisibility(); 
-                        // Removed renderApp() here as it causes full re-render
                     }, 400);
                 }
             });
@@ -1490,7 +1496,6 @@
                         activeTab = 'saved';
                         updateSectionVisibility(); 
                         fetchSavedRecipes();
-                        // Removed renderApp() here as it causes full re-render
                     }, 400);
                 }
             });
@@ -1499,19 +1504,36 @@
             if (logoutButton) {
                 logoutButton.addEventListener('click', handleLogout);
             }
-
-            // Render initial dynamic content
-            renderPopularDishes();
-            renderCategories();
-            renderDynamicContent();
-            updateSectionVisibility(); 
-            
-            // Render modal if selectedRecipe exists
-            renderRecipeDetailModal();
             
             // Initialize parallax after elements are in DOM
             initParallax();
         }
+
+        // New function to update dynamic parts of the main app content
+        function updateMainAppDynamicContent() {
+            // Update username display
+            if (currentUsernameDisplayEl) {
+                currentUsernameDisplayEl.textContent = isGuest ? 'Guest' : currentUsername;
+            }
+            const logoutButton = document.getElementById('logoutButton');
+            if (logoutButton) {
+                logoutButton.textContent = isGuest ? 'End Guest Session' : 'Log Out';
+            }
+
+            // Render initial dynamic content based on active tab
+            if (activeTab === 'home') {
+                renderPopularDishes();
+                renderCategories();
+            } else if (activeTab === 'search') {
+                renderDynamicContent(); // Render current search results or prompt
+            } else if (activeTab === 'saved') {
+                fetchSavedRecipes(); // Re-fetch and render saved recipes
+            }
+            updateSectionVisibility(); // Ensure correct tab visibility and active state
+            updateErrorDisplay(); 
+            renderRecipeDetailModal(); // Re-render modal if open
+        }
+
 
         // --- Parallax Logic ---
         let ticking = false;
@@ -1961,7 +1983,7 @@
                 currentUsername = '';
             }
             isAppInitialized = true; // App is ready to render based on auth state
-            renderApp(); // Render either login/auth or main content.
+            renderAppContentBasedOnAuth(); // Render either login/auth or main content.
         }
 
         // --- Initial Load ---
@@ -1981,8 +2003,6 @@
                     splashScreen.style.display = 'none'; // Hide completely after fade
                     document.getElementById('root').style.display = 'block'; // Show main app/login
                     document.body.style.overflow = 'auto'; // Re-enable scrolling
-                    // Ensure parallax elements are correctly positioned after fade-in
-                    initParallax();
                     // NEW: Trigger initial data fetches here after the splash screen fades
                     // This ensures popular dishes and categories load right away.
                     triggerInitialDataFetches(); 
